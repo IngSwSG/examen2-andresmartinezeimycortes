@@ -9,7 +9,7 @@ class MaterialUnidad extends Model
 {
     use HasFactory;
 
-    protected $table = 'materialUnidad';
+    protected $table = 'material_unidads';
     protected $primaryKey = 'idMaterialUnidad';
     public $incrementing = true;
     protected $keyType = 'int';
@@ -17,7 +17,7 @@ class MaterialUnidad extends Model
     protected $fillable = [
         'cantidad',
         'unidad_id',
-        'codigo',
+        'codigo_material',
         'codigoPresupuesto',
     ];
 
@@ -28,7 +28,7 @@ class MaterialUnidad extends Model
 
     public function material()
     {
-        return $this->belongsTo(Material::class, 'codigo');
+        return $this->belongsTo(Material::class, 'codigo_material');
     }
 
     public function presupuesto()

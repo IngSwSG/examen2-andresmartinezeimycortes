@@ -14,11 +14,11 @@ class Requisicion extends Model
     public $incrementing = true;
     protected $keyType = 'int';
 
-    protected $fillable = ['fecha', 'estado', 'idUsuario'];
+    protected $fillable = ['fecha', 'estado', 'usuario_id'];
 
     public function usuario()
     {
-        return $this->belongsTo(Usuario::class, 'idUsuario');
+        return $this->belongsTo(Usuario::class, 'usuario_id');
     }
 
     public function items()
