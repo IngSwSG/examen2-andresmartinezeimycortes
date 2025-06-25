@@ -44,4 +44,48 @@ class MaterialController extends Controller
 
         return response()->json($material->load('categoria'), 201);
     }
+
+    /**
+     * Update an existing material.
+     * URL: PUT /api/materials/{codigo}
+     * Body JSON puede incluir: unidad_medida, descripcion, ubicacion, categoria.
+     * Devuelve el material actualizado con su categoría.
+     */
+    public function update(Request $request, $codigo): JsonResponse
+    {
+        $material = Material::with('categoria')->findOrFail($codigo);
+
+        $validated = $request->validate([
+            'unidad_medida' => 'sometimes|string|max:100',
+            'descripcion'   => 'sometimes|nullable|string',
+            'ubicacion'     => 'sometimes|nullable|string|max:255',
+            'categoria'     => 'sometimes|string|max:255',
+        ]);
+
+        if (array_key_exists('categoria', $validated)) {
+            $categoria = Categoria::firstOrCreate(['nombre' => $validated['categoria']]);
+            $material->categoria_id = $categoria->id;
+        }
+
+        foreach (['unidad_medida', 'descripcion', 'ubicacion'] as $field) {
+            if (array_key_exists($field, $validated)) {
+                $material->$field = $validated[$field];
+            }
+        }
+
+        $material->save();
+
+        return response()->json($material->load('categoria'));
+
+    }
+
+    /**
+     * List all materials with their categories.
+     * URL: GET /api/materials
+     */
+    public function index(): JsonResponse
+    {
+        $materials = Material::with('categoria')->get();
+        return response()->json($materials);
+    }
 }
